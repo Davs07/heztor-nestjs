@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ClerkAuthGuard } from 'src/auth/clerk-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Get('sync/:clerkId')
+  async syncUser(@Param('clerkId') clerkId: string) {
+    return this.usersService.syncUser(clerkId);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  // @UseGuards(ClerkAuthGuard)
+  async getUsers(){
+    return this.usersService.getUsers();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Post('sync')
+  async createUserAndSync(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.createUserAndSync(createUserDto.clerkId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
 }

@@ -1,26 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { clerkClient } from '@clerk/clerk-sdk-node';
+import { AuthService } from 'src/auth/auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  constructor(
+    private prisma: PrismaService
+  ) {}
+  
+ 
+
+  async getUsers(){
+    return clerkClient.users.getUserList()
   }
 
-  findAll() {
-    return `This action returns all users`;
+
+
+  async syncUser(clerkId: string) {
+    // const clerkUser = await this.authService.getUser(clerkId);
+    const clerkUser = await clerkClient.users.getUser(clerkId)
+    return this.prisma.user.upsert({
+      where: { clerkUserId: clerkId },
+      update: { email: clerkUser.emailAddresses[0].emailAddress,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl },
+      create: {
+        clerkUserId: clerkId,
+        email: clerkUser.emailAddresses[0].emailAddress,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async createUserAndSync(clerkId: string) {
+    const clerkUser = await clerkClient.users.getUser(clerkId)
+    return this.prisma.user.upsert({
+      where: { clerkUserId: clerkId },
+      update: { email: clerkUser.emailAddresses[0].emailAddress,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl },
+      create: {
+        clerkUserId: clerkId,
+        email: clerkUser.emailAddresses[0].emailAddress,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl,
+      },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

@@ -1,1 +1,3 @@
-export class CreateUserDto {}
+export class CreateUserDto {
+    clerkId: string;
+  }
