@@ -19,7 +19,6 @@ export class UsersController {
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
-   
     return this.usersService.createUserAndSync(createUserDto.clerkId);
   }
 

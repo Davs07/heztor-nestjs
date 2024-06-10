@@ -49,23 +49,23 @@ export class UsersService {
   }
 
   async updateUser(clerkId: string, updateUserDto: UpdateUserDto) {
-    await clerkClient.users.updateUser(clerkId, updateUserDto);
     const updatedUser = await this.prisma.user.update({
       where: { clerkUserId: clerkId },
       data: updateUserDto,
-    });
-    if (!updatedUser) {
-      throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-    }
+      });
+      if (!updatedUser) {
+        throw new NotFoundException(`User with clerkId ${clerkId} not found`);
+        }
+      await clerkClient.users.updateUser(clerkId, updateUserDto);
     return updatedUser;
   }
 
   async deleteUser(clerkId: string) {
-    await clerkClient.users.deleteUser(clerkId)
     const deletedUser = await this.prisma.user.delete({ where: { clerkUserId: clerkId } });
     if (!deletedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-    }
+      }
+    await clerkClient.users.deleteUser(clerkId)
     return deletedUser;
   }
 }
