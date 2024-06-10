@@ -23,6 +23,12 @@ export class UsersService {
   }
 
   async createUserAndSync(clerkId: string) {
+ /*    await clerkClient.users.createUser({
+      firstName: "Test",
+      lastName: "User",
+      emailAddress: [ "testclerk123@gmail.com" ],
+      password: "password"
+    }) */
     const clerkUser = await clerkClient.users.getUser(clerkId);
     return this.prisma.user.upsert({
       where: { clerkUserId: clerkId },
