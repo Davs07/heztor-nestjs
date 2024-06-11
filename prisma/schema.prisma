@@ -16,7 +16,7 @@ datasource db {
 model User {
   id          String   @id @default(cuid())
   email       String   @unique
-  password    String
+  password    String?
   firstName   String?
   lastName    String?
   imageUrl    String?
@@ -24,3 +24,32 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// model Project {
+//   id        String   @id @default(cuid())
+//   title     String
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id])
+//   columns   Column[] @relation(onDelete: Cascade)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Column {
+//   id        String   @id @default(cuid())
+//   title     String
+//   projectId String
+//   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+//   tasks     Task[]   @relation(onDelete: Cascade)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Task {
+//   id        String   @id @default(cuid())
+//   title     String
+//   columnId  String
+//   column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }

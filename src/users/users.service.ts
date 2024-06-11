@@ -86,8 +86,8 @@ export class UsersService {
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl
-      },
-    });
+        },
+        });
     if (!updatedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
     }
@@ -95,11 +95,11 @@ export class UsersService {
   }
 
   async deleteUser(clerkId: string) {
-    await clerkClient.users.deleteUser(clerkId);
     const deletedUser = await this.prisma.user.delete({ where: { clerkUserId: clerkId } });
     if (!deletedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-    }
+      }
+    await clerkClient.users.deleteUser(clerkId);
     return deletedUser;
   }
 }
