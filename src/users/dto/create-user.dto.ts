@@ -9,4 +9,6 @@ export class CreateUserDto {
   imageUrl?: string;
 
   password: string;
+
+  clerkId?: string
 }
