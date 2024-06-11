@@ -3,15 +3,23 @@ import { clerkClient } from '@clerk/clerk-sdk-node';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  async user(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+  ): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+  }
+
   async getUsers() {
-    const users = await this.prisma.user.findMany();
     // return clerkClient.users.getUserList();
-    return users
+    return await this.prisma.user.findMany();
   }
 
   async getUserByClerkId(clerkId: string) {
@@ -22,13 +30,15 @@ export class UsersService {
     return user;
   }
 
-  async createUserAndSync(clerkId: string) {
- /*    await clerkClient.users.createUser({
-      firstName: "Test",
-      lastName: "User",
-      emailAddress: [ "testclerk123@gmail.com" ],
-      password: "password"
-    }) */
+  async createUserAndSync(clerkId: string, data: Prisma.UserCreateInput): Promise<User> {
+    /*  
+      await clerkClient.users.createUser({
+        firstName: "Test",
+        lastName: "User",
+        emailAddress: [ "testclerk123@gmail.com" ],
+        password: "password"
+      }) 
+      */
     const clerkUser = await clerkClient.users.getUser(clerkId);
     return this.prisma.user.upsert({
       where: { clerkUserId: clerkId },
