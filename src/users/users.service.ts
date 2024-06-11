@@ -4,10 +4,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Prisma, User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService,  private jwtService: JwtService) {}
 
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
@@ -30,7 +31,7 @@ export class UsersService {
     return user;
   }
 
-  async createUserAndSync(clerkId: string, data: Prisma.UserCreateInput): Promise<User> {
+  async createUserAndSync(clerkId: string): Promise<User> {
     /*  
       await clerkClient.users.createUser({
         firstName: "Test",
@@ -38,9 +39,26 @@ export class UsersService {
         emailAddress: [ "testclerk123@gmail.com" ],
         password: "password"
       }) 
-      */
-    const clerkUser = await clerkClient.users.getUser(clerkId);
-    return this.prisma.user.upsert({
+    */
+      const clerkUser = await clerkClient.users.getUser(clerkId);
+      return this.prisma.user.upsert({
+        where: { clerkUserId: clerkId },
+        update: {
+          email: clerkUser.emailAddresses[0].emailAddress,
+          firstName: clerkUser.firstName,
+          lastName: clerkUser.lastName,
+          imageUrl: clerkUser.imageUrl
+        },
+        create: {
+          clerkUserId: clerkId,
+          email: clerkUser.emailAddresses[0].emailAddress,
+          firstName: clerkUser.firstName,
+          lastName: clerkUser.lastName,
+          imageUrl: clerkUser.imageUrl,
+          password: '', // No se utiliza para usuarios de Clerk
+        },
+      });
+    /* return this.prisma.user.upsert({
       where: { clerkUserId: clerkId },
       update: {
         email: clerkUser.emailAddresses[0].emailAddress,
@@ -55,27 +73,33 @@ export class UsersService {
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl
       },
-    });
+    }); */
+   
   }
 
   async updateUser(clerkId: string, updateUserDto: UpdateUserDto) {
+    const clerkUser = await clerkClient.users.updateUser(clerkId, updateUserDto);
     const updatedUser = await this.prisma.user.update({
       where: { clerkUserId: clerkId },
-      data: updateUserDto,
-      });
-      if (!updatedUser) {
-        throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-        }
-      await clerkClient.users.updateUser(clerkId, updateUserDto);
+      data: {
+        email: clerkUser.emailAddresses[0].emailAddress,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl
+      },
+    });
+    if (!updatedUser) {
+      throw new NotFoundException(`User with clerkId ${clerkId} not found`);
+    }
     return updatedUser;
   }
 
   async deleteUser(clerkId: string) {
+    await clerkClient.users.deleteUser(clerkId);
     const deletedUser = await this.prisma.user.delete({ where: { clerkUserId: clerkId } });
     if (!deletedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-      }
-    await clerkClient.users.deleteUser(clerkId)
+    }
     return deletedUser;
   }
 }

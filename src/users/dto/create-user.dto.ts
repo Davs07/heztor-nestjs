@@ -1,3 +1,12 @@
+
 export class CreateUserDto {
-    clerkId: string;
-  }
+  email: string;
+
+  firstName?: string;
+
+  lastName?: string;
+
+  imageUrl?: string;
+
+  password: string;
+}
