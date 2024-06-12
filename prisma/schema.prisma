@@ -27,12 +27,11 @@ model User {
 }
 
 model Habit {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
-  description String
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  description String?
+  userId      String
+  user        User    @relation(fields: [userId], references: [id])
 }
 
 // model Habit {

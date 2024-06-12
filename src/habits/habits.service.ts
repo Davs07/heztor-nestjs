@@ -23,12 +23,10 @@ export class HabitsService {
   }
 
   findOne(id: string) {
-    return this.prisma.habit.findUnique({
-      where: { id },
-    });
+    return this.prisma.habit.findUnique({ where: { id } });
   }
 
-  update(id: string, updateHabitDto) {
+  update(id: string, updateHabitDto: UpdateHabitDto) {
     return this.prisma.habit.update({
       where: { id },
       data: updateHabitDto,
@@ -36,8 +34,6 @@ export class HabitsService {
   }
 
   remove(id: string) {
-    return this.prisma.habit.delete({
-      where: { id },
-    });
+    return this.prisma.habit.delete({ where: { id } });
   }
 }
