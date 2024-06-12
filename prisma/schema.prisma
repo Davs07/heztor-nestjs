@@ -27,12 +27,93 @@ model User {
 }
 
 model Habit {
-  id        String   @id @default(cuid())
-  title     String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String           @id @default(cuid())
+  name               String
+  description        String
+  frequency          Frequency        @relation(fields: [frequencyId], references: [id])
+  category           Category
+  goal               Goal             @relation(fields: [goalId], references: [id])
+  smartDescription   SmartDescription @relation(fields: [smartDescriptionId], references: [id])
+  comments           String[]
+  completedDays      CompletedDay[]
+  priority           Priority?
+  userId             String
+  user               User             @relation(fields: [userId], references: [id])
+  frequencyId        String
+  goalId             String
+  smartDescriptionId String
+}
+
+model CompletedDay {
+  id           String   @id @default(cuid())
+  date         DateTime
+  completed    Boolean
+  otherDetails Json?
+  habitId      String
+  habit        Habit    @relation(fields: [habitId], references: [id])
+}
+
+enum Category {
+  Salud
+  Crecimiento
+  Relaciones
+  Desarrollo
+  Finanzas
+}
+
+enum Priority {
+  MuyAlta
+  Alta
+  Media
+  Baja
+}
+
+enum FrequencyType {
+  TodosLosDias
+  DiasEspecificos
+  CadaXdias
+}
+
+model Frequency {
+  id    String        @id @default(cuid())
+  type  FrequencyType
+  dias  Day[]
+  veces Int?
+  Habit Habit[]
+}
+
+model Goal {
+  id    String   @id @default(cuid())
+  type  GoalType
+  meta  Json
+  Habit Habit[]
+}
+
+enum GoalType {
+  SiNo
+  Cantidad
+  Cronometro
+  Subitems
+}
+
+enum Day {
+  Lunes
+  Martes
+  Miercoles
+  Jueves
+  Viernes
+  Sabado
+  Domingo
+}
+
+model SmartDescription {
+  id                            String  @id @default(cuid())
+  purposeAndMotivation          String
+  benefitsAndConsequences       String
+  currentHabitsAndEnvironment   String
+  capacityAndResources          String
+  possibleObstaclesAndSolutions String
+  Habit                         Habit[]
 }
 
 // model Project {
