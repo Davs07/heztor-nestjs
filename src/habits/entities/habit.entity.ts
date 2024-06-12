@@ -1,5 +1,5 @@
 // habit.entity.ts
-import { Prisma } from '@prisma/client';
+import { Frequency, Prisma } from '@prisma/client';
 import { Priority, Category } from '@prisma/client';
 
 export class Habit implements Prisma.HabitUncheckedCreateInput {
@@ -7,7 +7,7 @@ export class Habit implements Prisma.HabitUncheckedCreateInput {
   userId: string;
   name: string;
   description?: string;
-  frequency: Prisma.FrequencyCreateNestedOneWithoutHabitInput;
+  frequency: Frequency
   category?: Category | null; // Asegúrate de importar correctamente Category
   goal?: Prisma.GoalCreateNestedOneWithoutHabitInput | null;
   smartDescription?: Prisma.SmartDescriptionCreateNestedOneWithoutHabitInput | null;

@@ -77,8 +77,6 @@ enum FrequencyType {
 model Frequency {
   id    String        @id @default(cuid())
   type  FrequencyType
-  dias  Day[]
-  veces Int?
   Habit Habit[]
 }
 
