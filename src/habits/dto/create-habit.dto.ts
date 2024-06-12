@@ -1,11 +1,14 @@
+// src/habits/dto/create-habit.dto.ts
+
 import { IsString, IsOptional, IsEnum, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import {  Priority, Frequency, Goal, SmartDescription, CompletedDay  } from "src/types/habit-types"
+import { Priority, Frequency, Goal, SmartDescription, CompletedDay } from "src/types/habit-types"
 import { Category } from 'src/types/shared-types';
 
 export class CreateHabitDto {
   @IsString()
   name: string;
+
 
   @IsString()
   @IsOptional()
@@ -38,7 +41,6 @@ export class CreateHabitDto {
   @Type(() => CompletedDay)
   completedDays: CompletedDay[] = [];
 
-  @IsEnum(Priority)
-  @IsOptional()
-  priority?: Priority | null;
+  @IsString()
+  user: string; 
 }

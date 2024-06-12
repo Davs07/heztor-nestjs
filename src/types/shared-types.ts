@@ -1,12 +1,13 @@
 // src/types/shared-types.ts
 
+// shared-types.ts
 export enum Category {
-    Salud = "Salud y Bienestar",
-    Crecimiento = "Crecimiento Personal y Espiritual",
-    Relaciones = "Relaciones y Conexiones Sociales",
-    Desarrollo = "Desarrollo Profesional",
-    Finanzas = "Finanzas Personales",
-  }
+  Salud = "Salud",
+  Crecimiento = "Crecimiento",
+  Relaciones = "Relaciones",
+  Desarrollo = "Desarrollo",
+  Finanzas = "Finanzas",
+}
   
   export enum Day {
     Lunes = "Lunes",
