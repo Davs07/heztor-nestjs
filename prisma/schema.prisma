@@ -27,92 +27,101 @@ model User {
 }
 
 model Habit {
-  id                 String           @id @default(cuid())
-  name               String
-  description        String?
-  category           Category?
-  priority           Priority?
-  comments           String[]
-  completedDays      CompletedDay[]
-  frequency          Frequency?        @relation(fields: [frequencyId], references: [id])
-  goal               Goal?             @relation(fields: [goalId], references: [id])
-  smartDescription   SmartDescription? @relation(fields: [smartDescriptionId], references: [id])
-  user               User             @relation(fields: [userId], references: [id])
-  userId             String
-  frequencyId        String?
-  goalId             String?
-  smartDescriptionId String?
+  id          String @id @default(cuid())
+  name        String
+  description String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
-model CompletedDay {
-  id           String   @id @default(cuid())
-  date         DateTime
-  completed    Boolean
-  otherDetails Json?
-  habitId      String
-  habit        Habit    @relation(fields: [habitId], references: [id])
-}
+// model Habit {
+//   id                 String           @id @default(cuid())
+//   name               String
+//   description        String?
+//   category           Category?
+//   priority           Priority?
+//   comments           String[]
+//   completedDays      CompletedDay[]
+//   frequency          Frequency?        @relation(fields: [frequencyId], references: [id])
+//   goal               Goal?             @relation(fields: [goalId], references: [id])
+//   smartDescription   SmartDescription? @relation(fields: [smartDescriptionId], references: [id])
+//   user               User             @relation(fields: [userId], references: [id])
+//   userId             String
+//   frequencyId        String?
+//   goalId             String?
+//   smartDescriptionId String?
+// }
 
-enum Category {
-  Salud
-  Crecimiento
-  Relaciones
-  Desarrollo
-  Finanzas
-}
+// model CompletedDay {
+//   id           String   @id @default(cuid())
+//   date         DateTime
+//   completed    Boolean
+//   otherDetails Json?
+//   habitId      String
+//   habit        Habit    @relation(fields: [habitId], references: [id])
+// }
 
-enum Priority {
-  MuyAlta
-  Alta
-  Media
-  Baja
-}
+// enum Category {
+//   Salud
+//   Crecimiento
+//   Relaciones
+//   Desarrollo
+//   Finanzas
+// }
 
-enum FrequencyType {
-  TodosLosDias
-  DiasEspecificos
-  CadaXdias
-}
+// enum Priority {
+//   MuyAlta
+//   Alta
+//   Media
+//   Baja
+// }
 
-model Frequency {
-  id    String        @id @default(cuid())
-  type  FrequencyType
-  Habit Habit[]
-}
+// enum FrequencyType {
+//   TodosLosDias
+//   DiasEspecificos
+//   CadaXdias
+// }
 
-model Goal {
-  id    String   @id @default(cuid())
-  type  GoalType
-  meta  Json
-  Habit Habit[]
-}
+// model Frequency {
+//   id    String        @id @default(cuid())
+//   type  FrequencyType
+//   Habit Habit[]
+// }
 
-enum GoalType {
-  SiNo
-  Cantidad
-  Cronometro
-  Subitems
-}
+// model Goal {
+//   id    String   @id @default(cuid())
+//   type  GoalType
+//   meta  Json
+//   Habit Habit[]
+// }
 
-enum Day {
-  Lunes
-  Martes
-  Miercoles
-  Jueves
-  Viernes
-  Sabado
-  Domingo
-}
+// enum GoalType {
+//   SiNo
+//   Cantidad
+//   Cronometro
+//   Subitems
+// }
 
-model SmartDescription {
-  id                            String  @id @default(cuid())
-  purposeAndMotivation          String
-  benefitsAndConsequences       String
-  currentHabitsAndEnvironment   String
-  capacityAndResources          String
-  possibleObstaclesAndSolutions String
-  Habit                         Habit[]
-}
+// enum Day {
+//   Lunes
+//   Martes
+//   Miercoles
+//   Jueves
+//   Viernes
+//   Sabado
+//   Domingo
+// }
+
+// model SmartDescription {
+//   id                            String  @id @default(cuid())
+//   purposeAndMotivation          String
+//   benefitsAndConsequences       String
+//   currentHabitsAndEnvironment   String
+//   capacityAndResources          String
+//   possibleObstaclesAndSolutions String
+//   Habit                         Habit[]
+// }
 
 // model Project {
 //   id        String   @id @default(cuid())

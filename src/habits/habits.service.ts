@@ -8,20 +8,13 @@ import { UpdateHabitDto } from './dto/update-habit.dto';
 export class HabitsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createHabitDto) {
+  create(createHabitDto: CreateHabitDto) {
     return this.prisma.habit.create({
       data: {
         name: createHabitDto.name,
         description: createHabitDto.description,
-        frequency: createHabitDto.frequency,
-        category: createHabitDto.category,
-        goal: createHabitDto.goal,
-        smartDescription: createHabitDto.smartDescription,
-        comments: createHabitDto.comments,
-        completedDays: createHabitDto.completedDays,
-        priority: createHabitDto.priority,
-        user: { connect: { id: createHabitDto.userId } } // Asigna el ID del usuario aquí
-      }
+        userId: createHabitDto.userId,
+      },
     });
   }
 

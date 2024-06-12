@@ -9,12 +9,14 @@ export class CreateHabitDto {
   @IsString()
   name: string;
 
-
   @IsString()
   @IsOptional()
-  description?: string;
+  description: string;
 
-  @IsEnum(Frequency)
+  @IsString()
+  userId: string;
+
+  /* @IsEnum(Frequency)
   frequency: Frequency;
 
   @IsEnum(Category)
@@ -41,6 +43,5 @@ export class CreateHabitDto {
   @Type(() => CompletedDay)
   completedDays: CompletedDay[] = [];
 
-  @IsString()
-  user: string; 
+    */
 }
