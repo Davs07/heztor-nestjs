@@ -10,7 +10,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   imageUrl?: string;
 
-  password: string;
+  password?: string;
 }
 
 
