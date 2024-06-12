@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { clerkClient } from '@clerk/clerk-sdk-node';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,19 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService,  private jwtService: JwtService) {}
+  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
+  async user(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
   }
 
   async getUsers() {
-    // return clerkClient.users.getUserList();
-    return await this.prisma.user.findMany();
+    return this.prisma.user.findMany();
   }
 
   async getUserByClerkId(clerkId: string) {
@@ -31,16 +28,16 @@ export class UsersService {
     return user;
   }
 
-  async createUserAndSync(clerkId: string): Promise<User> {
-    /*  
-      await clerkClient.users.createUser({
-        firstName: "Test",
-        lastName: "User",
-        emailAddress: [ "testclerk123@gmail.com" ],
-        password: "password"
-      }) 
-    */
-      const clerkUser = await clerkClient.users.getUser(clerkId);
+  async createUserAndSync(clerkId: string) {
+    let clerkUser;
+
+    try {
+      clerkUser = await clerkClient.users.getUser(clerkId);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+
+    if (clerkUser) {
       return this.prisma.user.upsert({
         where: { clerkUserId: clerkId },
         update: {
@@ -58,23 +55,9 @@ export class UsersService {
           password: '', // No se utiliza para usuarios de Clerk
         },
       });
-    /* return this.prisma.user.upsert({
-      where: { clerkUserId: clerkId },
-      update: {
-        email: clerkUser.emailAddresses[0].emailAddress,
-        firstName: clerkUser.firstName,
-        lastName: clerkUser.lastName,
-        imageUrl: clerkUser.imageUrl
-      },
-      create: {
-        clerkUserId: clerkId,
-        email: clerkUser.emailAddresses[0].emailAddress,
-        firstName: clerkUser.firstName,
-        lastName: clerkUser.lastName,
-        imageUrl: clerkUser.imageUrl
-      },
-    }); */
-   
+    }
+
+    throw new NotFoundException(`User with clerkId ${clerkId} not found`);
   }
 
   async updateUser(clerkId: string, updateUserDto: UpdateUserDto) {
@@ -86,19 +69,23 @@ export class UsersService {
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl
-        },
-        });
+      },
+    });
+
     if (!updatedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
     }
+
     return updatedUser;
   }
 
   async deleteUser(clerkId: string) {
     const deletedUser = await this.prisma.user.delete({ where: { clerkUserId: clerkId } });
+
     if (!deletedUser) {
       throw new NotFoundException(`User with clerkId ${clerkId} not found`);
-      }
+    }
+
     await clerkClient.users.deleteUser(clerkId);
     return deletedUser;
   }
