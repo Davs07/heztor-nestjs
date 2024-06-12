@@ -29,19 +29,19 @@ model User {
 model Habit {
   id                 String           @id @default(cuid())
   name               String
-  description        String
-  frequency          Frequency        @relation(fields: [frequencyId], references: [id])
-  category           Category
-  goal               Goal             @relation(fields: [goalId], references: [id])
-  smartDescription   SmartDescription @relation(fields: [smartDescriptionId], references: [id])
+  description        String?
+  frequency          Frequency?        @relation(fields: [frequencyId], references: [id])
+  category           Category?
+  goal               Goal?             @relation(fields: [goalId], references: [id])
+  smartDescription   SmartDescription? @relation(fields: [smartDescriptionId], references: [id])
   comments           String[]
   completedDays      CompletedDay[]
   priority           Priority?
   userId             String
   user               User             @relation(fields: [userId], references: [id])
-  frequencyId        String
-  goalId             String
-  smartDescriptionId String
+  frequencyId        String?
+  goalId             String?
+  smartDescriptionId String?
 }
 
 model CompletedDay {
