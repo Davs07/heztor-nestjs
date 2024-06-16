@@ -34,7 +34,6 @@ model Habit {
   user        User    @relation(fields: [userId], references: [id])
 }
 
-
 // model Habit {
 //   id                 String           @id @default(cuid())
 //   name               String

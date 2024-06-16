@@ -5,10 +5,10 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:3001', // Cambia esto al dominio que desees permitir
+    origin: ['http://localhost:3001', 'http://localhost:5173'], // Cambia esto al dominio que desees permitir
     credentials: true, // Para permitir cookies
   });
-  app.use(cookieParser())
+  app.use(cookieParser());
   await app.listen(3000);
 }
 bootstrap();

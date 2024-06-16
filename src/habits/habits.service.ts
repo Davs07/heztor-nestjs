@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Habit } from './entities/habit.entity';
-import { CreateHabitDto } from './dto/create-habit.dto'; 
-import { UpdateHabitDto } from './dto/update-habit.dto'; 
+import { CreateHabitDto } from './dto/create-habit.dto';
+import { UpdateHabitDto } from './dto/update-habit.dto';
 
 @Injectable()
 export class HabitsService {
